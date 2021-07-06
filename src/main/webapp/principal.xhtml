@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<title>Sistema Pet-Shop</title>
+	<h:outputStylesheet library="css" name="cssLayout.css" />
+	<h:outputStylesheet library="css" name="default.css" />
+	<h:outputStylesheet library="css" name="primeflex.min.css" />
+</h:head>
+<h:body>
+
+	<div class="p-grid">
+
+		<div id="top" class="p-col-12">
+			<IMG alt="Logo" src="resources/img/paw.png"
+			style="width: 50px; height:50px; margin-right:100px; margin-left:50px;" />
+			<h:outputText value="PETSHOP LTDA" id="logo_texto" />
+		</div>
+		<div class="p-col-2">
+			<h:form id="menu">
+				<p:menu style="width:100%">
+					<p:menuitem value="Home" outcome="principal" icon="pi pi-home" />
+					<p:submenu label="Cadastro">
+						<p:menuitem value="Dono" outcome="dono"
+							icon="pi pi-id-card" />
+						<p:menuitem value="Gato" outcome="gato"
+							icon="pi pi-github" />
+						<p:menuitem value="Cachorro" outcome="cachorro"
+							icon="pi pi-tablet" />
+						<p:menuitem value="Consultas" outcome="consulta"
+						 icon="pi pi-users" />
+						</p:submenu>
+				</p:menu>
+			</h:form>
+		</div>
+
+		<div id="content" class="p-col-9 left_content">
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				onsuccess="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<div class="p-text-center">
+					<h:graphicImage library="img" name="loadingBuffer.gif" />
+				</div>
+			</p:dialog>
+
+			<p:messages id="messages" closable="true">
+				<p:autoUpdate />
+			</p:messages>
+
+			<ui:insert name="conteudo">
+				<p:panel header="Pagina Principal" id="painel_conteudo">
+					<div class="card">
+					<center>
+						<IMG alt="Banner" src="resources/img/dogbanner.jpg"
+						style="width: 640px; height: 480px;" />
+					</center>
+					</div>
+				</p:panel>
+			</ui:insert>
+		</div>
+	</div>
+
+</h:body>
+</html>

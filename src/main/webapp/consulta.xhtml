@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="./principal.xhtml">
+	<ui:define name="conteudo">
+		<p:panel header="Consulta" id="painel_conteudo">
+			<p:tabView activeIndex="#{consultaC.aba}">
+			<p:ajax event="tabChange" listener="#{consultaC.onTabChange}" update="form_novo"/>
+				<p:tab title="Pesquisa">
+					<h:form id="form_pesquisa">
+						<p:panelGrid columns="3" layout="flex"
+							columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-6 p-xl-4, p-col-9 p-md-3 p-xl-2"
+							contentStyleClass="ui-fluid">
+							<p:outputLabel for="consulta" value="Consulta:" />
+							<p:inputMask id="consulta" mask="99/99/9999" style="width: 100px;"
+								value="#{consultaC.consulta.dia}" required="true" requiredMessage="Data da consulta é obrigatório!">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+							<p:commandButton value="Pesquisar" update="tabela"
+								actionListener="#{consultaC.pesquisarPorData}" />
+								<p:tooltip for="consulta" value="DD/MM/AAAA" showEvent="focus" hideEvent="blur" position="top" />
+						</p:panelGrid>
+						<p:dataTable id="tabela" var="consulta"
+							value="#{consultaC.modelConsultas}" rows="10" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+							rowsPerPageTemplate="5,10,15,{ShowAll|'Todos'}">
+
+							<p:column headerText="Data">
+								<h:outputText value="#{consulta.dia}">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Valor">
+								<h:outputText value="#{consulta.valor}" />
+							</p:column>
+							
+							<p:column headerText="Animal">
+								<h:outputText value="#{consulta.animal.nome}" />
+							</p:column>
+							
+							<p:column headerText="Ação">
+								<p:commandButton icon="pi pi-pencil"
+									process="@this" title="alterar" actionListener="#{consultaC.prepararAlterar}"
+									update="@all" style="margin-right: 12px"
+									styleClass="rounded-button ui-button-outlined" />
+								<p:commandButton actionListener="#{consultaC.excluir}" icon="pi pi-trash"
+									update="tabela" title="excluir"
+									styleClass="rounded-button ui-button-danger ui-button-outlined">
+									<p:confirm header="Confirmação"
+										message="Deseja realmente excluir?" icon="pi pi-info-circle" />
+								</p:commandButton>
+								<!-- fim do botão excluir -->
+							</p:column>
+
+						</p:dataTable>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							responsive="true" width="350">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no ui-button-flat" />
+						</p:confirmDialog>
+					</h:form>
+				</p:tab>
+				<!--aba para cadastrar e alterar-->
+				<p:tab title="Novo">
+					<h:form id="form_novo">
+					<p:panelGrid id="painel_" columns="4" layout="flex" columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4" contentStyleClass="p-align-baseline ui-fluid">
+							<p:outputLabel for="dataConsulta" value="Data:" />
+							<p:inputMask id="dataConsulta" mask="99/99/9999"
+								value="#{consultaC.consulta.dia}" required="true" requiredMessage="Data é obrigatório!">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+
+							<p:outputLabel for="valor" value="Valor:" />
+							<p:inputNumber id="valor" 
+								value="#{consultaC.consulta.valor}" required="true" requiredMessage="E-mail é obrigatório!"
+								 symbol="R$ " symbolPosition="p" decimalSeparator="," thousandSeparator="."/>
+														
+							<h:outputLabel for="animais" value="Animais: " />
+							<p:selectOneMenu id="animais" value="#{consultaC.animal.id}"
+								required="true"
+								requiredMessage="Animal é obrigatório!"
+								filter="true" filterMatchMode="startsWith">
+								<f:selectItem itemLabel="Selecione um Animal..."  />
+								<f:selectItems value="#{consultaC.comboAnimais}" />
+							</p:selectOneMenu>	
+
+					</p:panelGrid>
+							<p:panelGrid columns="2" layout="flex" columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4" contentStyleClass="p-align-baseline ui-fluid">
+								<p:commandButton value="Salvar" action="#{consultaC.salvar}"
+									update="@all" style="width: 150px;" />
+								<p:commandButton value="Limpar" action="#{consultaC.limpar}" process="@this"
+									update="@all" styleClass="ui-button-warning" style="width: 150px; margin-left:50px;" />
+							</p:panelGrid>
+					</h:form>
+				</p:tab>
+			</p:tabView>
+		</p:panel>
+	</ui:define>
+</ui:composition>
+</html>

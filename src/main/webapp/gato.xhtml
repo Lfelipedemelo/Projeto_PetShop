@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="./principal.xhtml">
+	<ui:define name="conteudo">
+		<p:panel header="Gato" id="painel_conteudo">
+			<p:tabView activeIndex="#{gatoC.aba}">
+				<p:tab title="Pesquisa">
+					<h:form id="form_pesquisa">
+						<p:panelGrid columns="3" layout="flex"
+							columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-6 p-xl-4, p-col-9 p-md-3 p-xl-2"
+							contentStyleClass="ui-fluid">
+							<p:outputLabel for="gato" value="Gato:" />
+							<p:inputText id="gato" value="#{gatoC.gato.nome}" />
+							<p:commandButton value="Pesquisar" update="tabela gato"
+								actionListener="#{gatoC.pesquisarPorNome}" />
+						</p:panelGrid>
+						<p:dataTable id="tabela" var="gato"
+							value="#{gatoC.modelGatos}" rows="10" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+							rowsPerPageTemplate="5,10,15,{ShowAll|'Todos'}">
+
+							<p:column headerText="Nome">
+								<h:outputText value="#{gato.nome}" />
+							</p:column>
+
+							<p:column headerText="Nascimento">
+								<h:outputText value="#{gato.nascimento}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Peso">
+								<h:outputText value="#{gato.peso}" />
+							</p:column>
+
+							<p:column headerText="Dono">
+								<h:outputText value="#{gato.dono.nome}" />
+							</p:column>
+							
+							<p:column headerText="Ação">
+								<p:commandButton icon="pi pi-pencil"
+									process="@this" title="alterar" actionListener="#{gatoC.prepararAlterar}"
+									update="@all" style="margin-right: 12px"
+									styleClass="rounded-button ui-button-outlined" />
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</p:tab>
+				<!--aba para cadastrar e alterar-->
+				<p:tab title="Novo">
+					<h:form id="form_novo">
+					<p:divider align="left" type="dashed">
+						<b>Pesquisar Dono</b>
+					</p:divider>	
+					<p:panelGrid id="painel_" columns="5" layout="flex" columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4" contentStyleClass="p-align-baseline ui-fluid">
+					<p:outputLabel for="cpf" value="CPF:" />
+					<p:inputMask id="cpf" mask="999.999.999-99"
+								value="#{gatoC.dono.cpf}" required="true" requiredMessage="CPF é obrigatório!">
+						<p:ajax listener="#{gatoC.pesquisarDono}" event="blur" update="dono"/>
+					</p:inputMask>
+					<p:outputLabel for="dono" value="Dono:" />
+							<p:inputText id="dono" value="#{gatoC.dono.nome}" disabled="true"/>
+					</p:panelGrid>							
+					<p:divider align="left" type="dashed">
+						<b>Informações do Gato</b>
+					</p:divider>	
+					<p:panelGrid columns="4" layout="flex" columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4" contentStyleClass="p-align-baseline ui-fluid">
+						<p:outputLabel for="nome" value="Nome:" />
+							<p:inputText id="nome" value="#{gatoC.gato.nome}"
+								required="true" requiredMessage="Nome é obrigatório!" />
+
+							<p:outputLabel for="nascimento" value="Nascimento:" />
+							<p:inputMask id="nascimento" mask="99/99/9999"
+								value="#{gatoC.gato.nascimento}" required="true" requiredMessage="Data de nascimento é obrigatório!">
+								<f:convertDateTime pattern="dd/MM/yyyy"/>
+								</p:inputMask>
+														
+							<p:outputLabel for="peso" value="Peso:" />
+							<p:inputMask id="peso" mask="99.999"
+								value="#{gatoC.gato.peso}" required="true" requiredMessage="Peso é obrigatório!"/>									
+							
+							<p:outputLabel for="sexo" value="Sexo:" />
+							 <p:selectOneListbox id="sexo" value="#{gatoC.gato.sexo}">
+				                <f:selectItem itemLabel="Macho" itemValue="macho"/>
+				                <f:selectItem itemLabel="Fêmea" itemValue="fêmea"/>
+				            </p:selectOneListbox>			
+				            
+				            <p:outputLabel for="observacao" value="Observação:" />
+				            <p:inputTextarea id="observacao" value="#{gatoC.gato.observacao}"
+				             rows="6" cols="33" maxlength="255"/>							
+					</p:panelGrid>
+
+					<p:divider align="left" type="dashed">
+						<b>Doenças</b>
+					</p:divider>	
+					<p:panelGrid columns="2" layout="flex" columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4" contentStyleClass="p-align-baseline ui-fluid">				            
+				            <p:outputLabel for="fiv" value="Fiv:" />
+				            <p:selectBooleanButton id="fiv" onLabel="Positivo" offLabel="Negativo" value="#{gatoC.gato.fiv}"
+                                onIcon="pi pi-check" offIcon="pi pi-times" style="width:50%" />
+                            <p:outputLabel for="felv" value="Felv:" />
+				            <p:selectBooleanButton id="felv" onLabel="Positivo" offLabel="Negativo" value="#{gatoC.gato.felv}"
+                                onIcon="pi pi-check" offIcon="pi pi-times" style="width:50%" />	
+					</p:panelGrid>
+					
+					<p:divider align="left" type="dashed">
+						<b>Comportamento</b>
+					</p:divider>	
+					<p:panelGrid columns="2" layout="grid" styleClass="showcase-text-align-left">				            
+				     <p:outputLabel for="comportamento" value="Tipo:"/>
+		                <p:selectOneMenu id="comportamento" value="#{gatoC.comportamento.tipo}"
+		                	required="true" requiredMessage="Comportamento é obrigatório">
+		                    <f:selectItem itemLabel="Selecione um" itemValue="#{null}"/>
+		                    <f:selectItem itemLabel="Agressivo" itemValue="agressivo"/>
+		                    <f:selectItem itemLabel="Normal" itemValue="normal"/>
+		                    <f:selectItem itemLabel="Medroso" itemValue="medroso"/>
+		               </p:selectOneMenu>
+                            <p:outputLabel for="descricao" value="Descrição:" />
+				            <p:inputTextarea id="descricao" value="#{gatoC.comportamento.descricao}"
+				             rows="6" cols="33" maxlength="255"/>
+					</p:panelGrid>
+                            		
+							<p:commandButton value="Salvar" action="#{gatoC.salvar}"
+									update="@all" style="width: 150px; margin-top:30px;" />
+							<p:commandButton value="Limpar" action="#{gatoC.limpar}" process="@this"
+									update="@all" styleClass="ui-button-warning" style="width: 150px; margin-left:50px;" />
+					</h:form>
+				</p:tab>
+			</p:tabView>
+		</p:panel>
+	</ui:define>
+</ui:composition>
+</html>
